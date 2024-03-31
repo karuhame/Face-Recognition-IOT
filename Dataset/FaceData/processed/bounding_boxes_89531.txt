@@ -1,0 +1,15 @@
+Dataset/FaceData/processed\TranVanDucSon\WIN_20240330_12_56_33_Pro.png 494 137 803 517
+Dataset/FaceData/processed\TranVanDucSon\WIN_20240330_12_56_34_Pro.png 443 120 729 477
+Dataset/FaceData/processed\TranVanDucSon\WIN_20240330_12_56_35_Pro.png 585 138 869 487
+Dataset/FaceData/processed\TranVanDucSon\WIN_20240330_12_56_37_Pro.png 532 184 826 556
+Dataset/FaceData/processed\TranVanDucSon\WIN_20240330_12_56_38_Pro.png 521 100 804 428
+Dataset/FaceData/processed\Sheldon\sheldon0.png 0 0 90 90
+Dataset/FaceData/processed\Sheldon\sheldon1.png 0 0 90 90
+Dataset/FaceData/processed\Sheldon\sheldon2.png 1 0 107 107
+Dataset/FaceData/processed\Sheldon\sheldon3.png 2 0 107 107
+Dataset/FaceData/processed\Sheldon\sheldon4.png 0 0 90 90
+Dataset/FaceData/processed\Penny\penny0.png 0 0 74 74
+Dataset/FaceData/processed\Penny\penny1.png 0 0 74 74
+Dataset/FaceData/processed\Penny\penny2.png 0 0 62 62
+Dataset/FaceData/processed\Penny\penny3.png 0 0 74 74
+Dataset/FaceData/processed\Penny\penny4.png 0 0 86 90
