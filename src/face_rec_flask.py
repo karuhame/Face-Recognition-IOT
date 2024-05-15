@@ -24,8 +24,8 @@ THRESHOLD = [0.6, 0.7, 0.7]
 FACTOR = 0.709
 IMAGE_SIZE = 182
 INPUT_IMAGE_SIZE = 160
-CLASSIFIER_PATH = '../Models/facemodel.pkl'
-FACENET_MODEL_PATH = '../Models/20180402-114759.pb'
+CLASSIFIER_PATH = './Models/facemodel.pkl'
+FACENET_MODEL_PATH = './Models/20180402-114759.pb'
 
 # Load The Custom Classifier
 with open(CLASSIFIER_PATH, 'rb') as file:
@@ -44,11 +44,11 @@ print('Loading feature extraction model')
 facenet.load_model(FACENET_MODEL_PATH)
 
 # Get input and output tensors
-images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
-embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
+images_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("input:0")
+embeddings = tf.compat.v1.get_default_graph().get_tensor_by_name("embeddings:0")
+phase_train_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("phase_train:0")
 embedding_size = embeddings.get_shape()[1]
-pnet, rnet, onet = align.detect_face.create_mtcnn(sess, "align")
+pnet, rnet, onet = align.detect_face.create_mtcnn(sess, "src/align")
 
 
 
@@ -66,11 +66,14 @@ def index():
 @cross_origin()
 def upload_img_file():
     if request.method == 'POST':
+        data = request.json
         # base 64
         name="Unknown"
-        f = request.form.get('image')
-        w = int(request.form.get('w'))
-        h = int(request.form.get('h'))
+        f = data['image']
+        # w = int(request.form.get('w'))
+        # h = int(request.form.get('h'))
+        # print(w)
+        # print(h)
 
         decoded_string = base64.b64decode(f)
         frame = np.fromstring(decoded_string, dtype=np.uint8)
@@ -90,7 +93,7 @@ def upload_img_file():
                 bb[i][2] = det[i][2]
                 bb[i][3] = det[i][3]
                 cropped = frame
-                #cropped = frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :]
+                cropped = frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :]
                 scaled = cv2.resize(cropped, (INPUT_IMAGE_SIZE, INPUT_IMAGE_SIZE),
                                     interpolation=cv2.INTER_CUBIC)
                 scaled = facenet.prewhiten(scaled)
@@ -104,7 +107,7 @@ def upload_img_file():
                 best_name = class_names[best_class_indices[0]]
                 print("Name: {}, Probability: {}".format(best_name, best_class_probabilities))
 
-                if best_class_probabilities > 0.8:
+                if best_class_probabilities > 0.6:
                     name = class_names[best_class_indices[0]]
                 else:
                     name = "Unknown"

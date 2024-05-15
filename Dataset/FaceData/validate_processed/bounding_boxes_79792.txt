@@ -1,0 +1,22 @@
+Dataset/FaceData/validate_processed\MinhNhat\z5437331976424_20edc96954e79e764276d9e8b459e28f.png 386 592 1735 2390
+Dataset/FaceData/validate_processed\MinhNhat\z5437357139890_3b8e54d95e9841a0341bf83c4a18bc9b.png 157 160 1799 2360
+Dataset/FaceData/validate_processed\MinhNhat\z5437331959543_b0f2d96ecfbe7b823a09cae4cd869d26.png 188 477 1479 2111
+Dataset/FaceData/validate_processed\MinhNhat\z5437363790890_7f3c341f8ffa02383a2fb5a626c0c23b.png 297 511 1752 2464
+Dataset/FaceData/validate_processed\MinhNhat\z5437363850992_e62c366e718fabb6fa9933d8631c10f6.png 219 594 1680 2440
+Dataset/FaceData/validate_processed\MinhNhat\z5437363840416_78fa7d8ba5f0f5a139623be9f17ec87f.png 327 600 1633 2312
+Dataset/FaceData/validate_processed\MinhNhat\z5437331954109_1ccba45d84916cd53c037cffbbb62b06.png 366 311 1662 1978
+Dataset/FaceData/validate_processed\MinhNhat\z5437334407614_2cafb03f2daf065772048f3199913076.png 442 568 1666 2154
+Dataset/FaceData/validate_processed\ThanhMinh\f75ab76247b3e6edbfa23.png 460 672 1448 1962
+Dataset/FaceData/validate_processed\ThanhMinh\f4c8d7cc271d8643df0c4.png 535 910 1592 2336
+Dataset/FaceData/validate_processed\ThanhMinh\677d6ba59b743a2a636510.png 429 740 1486 2176
+Dataset/FaceData/validate_processed\ThanhMinh\7c8e258ad55b74052d4a6.png 633 767 1480 1798
+Dataset/FaceData/validate_processed\ThanhMinh\1a7c737883a922f77bb85.png 379 1060 1380 2361
+Dataset/FaceData/validate_processed\ThanhMinh\c11a28b4df657e3b27741.png 474 820 1390 2002
+Dataset/FaceData/validate_processed\ThanhMinh\952368dd980c3952601d9.png 477 545 1581 2015
+Dataset/FaceData/validate_processed\ThanhMinh\1b17bde84d39ec67b5287.png 512 598 1534 1966
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_36_Pro.png 503 315 801 716
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_35_Pro.png 524 304 805 643
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_37_Pro.png 465 341 738 683
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_32_Pro.png 507 312 811 703
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_32_Pro (2).png 489 305 791 698
+Dataset/FaceData/validate_processed\DucSon\WIN_20240515_10_10_34_Pro.png 552 326 831 697

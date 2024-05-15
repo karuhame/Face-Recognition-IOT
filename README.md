@@ -10,4 +10,4 @@ python src/align_dataset_mtcnn.py  Dataset/FaceData/raw Dataset/FaceData/process
 python src/classifier.py TRAIN Dataset/FaceData/processed Models/20180408-102900.pb Models/facemodel.pkl --batch_size 1000
 
 # Test
-python src/face_rec_cam.py
+python src/face_rec_cam.py 

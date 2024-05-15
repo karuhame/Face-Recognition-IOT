@@ -1,5 +1,7 @@
 """An example of how to use your own dataset to train a classifier that recognizes people.
 """
+#python src/classifier.py TRAIN Dataset/FaceData/processed Models/20180408-102900.pb Models/facemodel.pkl --batch_size 1000
+
 # MIT License
 # 
 # Copyright (c) 2016 David Sandberg
@@ -35,6 +37,9 @@ import sys
 import math
 import pickle
 from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, log_loss
+from sklearn.ensemble import RandomForestClassifier
 
 def main(args):
   
@@ -60,6 +65,7 @@ def main(args):
 
                  
             paths, labels = facenet.get_image_paths_and_labels(dataset)
+            print("lables: ", labels)
             
             print('Number of classes: %d' % len(dataset))
             print('Number of images: %d' % len(paths))
@@ -92,9 +98,11 @@ def main(args):
             if (args.mode=='TRAIN'):
                 # Train classifier
                 print('Training classifier')
+                
                 model = SVC(kernel='linear', probability=True)
+                # model = RandomForestClassifier()
                 model.fit(emb_array, labels)
-            
+
                 # Create a list of class names
                 class_names = [ cls.name.replace('_', ' ') for cls in dataset]
 
@@ -103,6 +111,25 @@ def main(args):
                     pickle.dump((model, class_names), outfile)
                 print('Saved classifier model to file "%s"' % classifier_filename_exp)
                 
+                y_pred_train = model.predict(emb_array)
+
+                # Compute accuracy on the training data
+                accuracy_train = accuracy_score(labels, y_pred_train)
+
+                # Compute log loss on the training data
+                y_pred_proba_train = model.predict_proba(emb_array)
+                log_loss_train = log_loss(labels, y_pred_proba_train)
+
+                # Create a list of metric values
+                metrics = ['Accuracy', 'Log Loss']
+                values = [accuracy_train, log_loss_train]
+
+                # Plot the metrics
+                plt.bar(metrics, values)
+                plt.ylabel('Value')
+                plt.title('Training Metrics')
+                plt.show()
+                
             elif (args.mode=='CLASSIFY'):
                 # Classify images
                 print('Testing classifier')
@@ -110,9 +137,11 @@ def main(args):
                     (model, class_names) = pickle.load(infile)
 
                 print('Loaded classifier model from file "%s"' % classifier_filename_exp)
-
+                print("Shape", emb_array.shape)
                 predictions = model.predict_proba(emb_array)
+                print("Prediction:", predictions)
                 best_class_indices = np.argmax(predictions, axis=1)
+                print("Best class indices: ",best_class_indices)
                 best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
                 
                 for i in range(len(best_class_indices)):

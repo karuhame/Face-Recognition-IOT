@@ -48,12 +48,6 @@ def main(args):
     src_path,_ = os.path.split(os.path.realpath(__file__))
     facenet.store_revision_info(src_path, output_dir, ' '.join(sys.argv))
     
-    # data augmentation
-    create_blur_image(args.input_dir, args.output_dir)
-    create_ilumination_image(args.input_dir, args.output_dir)
-    create_noisy_images(args.input_dir, args.output_dir)
-
-    
     dataset = facenet.get_dataset(args.input_dir)
     
     
@@ -151,12 +145,19 @@ def main(args):
     print('Total number of images: %d' % nrof_images_total)
     print('Number of successfully aligned images: %d' % nrof_successfully_aligned)
             
-
+    # data augmentation
+    if(args.augment == True):
+        create_blur_image(args.output_dir, args.augment_dir)
+        create_ilumination_image(args.output_dir, args.augment_dir)
+        create_noisy_images(args.output_dir, args.augment_dir)
+    
+    
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
     parser.add_argument('input_dir', type=str, help='Directory with unaligned images.')
     parser.add_argument('output_dir', type=str, help='Directory with aligned face thumbnails.')
+    parser.add_argument('augment_dir', type=str, help='Directory with unaligned images being augment.')
     parser.add_argument('--image_size', type=int,
         help='Image size (height, width) in pixels.', default=182)
     parser.add_argument('--margin', type=int,
@@ -167,6 +168,8 @@ def parse_arguments(argv):
         help='Upper bound on the amount of GPU memory that will be used by the process.', default=1.0)
     parser.add_argument('--detect_multiple_faces', type=bool,
                         help='Detect and align multiple faces per image.', default=False)
+    parser.add_argument('--augment', type=bool,
+                        help='Do augmentation', default=False)
     return parser.parse_args(argv)
 
 if __name__ == '__main__':

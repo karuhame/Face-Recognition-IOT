@@ -14,11 +14,12 @@ import numpy as np
 import cv2
 import collections
 from sklearn.svm import SVC
-
-
+import numpy as np
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', help='Path of the video you want to test on.', default=0)
+    parser.add_argument('--modelPath', type=str, help='Models/pkl')
+
     args = parser.parse_args()
     
     # Cai dat cac tham so can thiet
@@ -27,7 +28,7 @@ def main():
     FACTOR = 0.709
     IMAGE_SIZE = 182
     INPUT_IMAGE_SIZE = 160
-    CLASSIFIER_PATH = 'Models/facemodel.pkl'
+    CLASSIFIER_PATH = args.modelPath
     VIDEO_PATH = args.path
     FACENET_MODEL_PATH = 'Models/20180402-114759.pb'
 
@@ -49,9 +50,9 @@ def main():
             facenet.load_model(FACENET_MODEL_PATH)
 
             # Lay tensor input va output
-            images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
-            embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-            phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
+            images_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("input:0")
+            embeddings = tf.compat.v1.get_default_graph().get_tensor_by_name("embeddings:0")
+            phase_train_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("phase_train:0")
             embedding_size = embeddings.get_shape()[1]
 
             # Cai dat cac mang con
@@ -63,13 +64,14 @@ def main():
             # Lay hinh anh tu file video
             cap = cv2.VideoCapture(VIDEO_PATH)
 
+            result = []
             while (cap.isOpened()):
                 # Doc tung frame
                 ret, frame = cap.read()
-
-                # Phat hien khuon mat, tra ve vi tri trong bounding_boxes
-                bounding_boxes, _ = align.detect_face.detect_face(frame, MINSIZE, pnet, rnet, onet, THRESHOLD, FACTOR)
-
+                try:
+                    bounding_boxes, _ = align.detect_face.detect_face(frame, MINSIZE, pnet, rnet, onet, THRESHOLD, FACTOR)
+                except AttributeError as e:
+                    break
                 faces_found = bounding_boxes.shape[0]
                 try:
                     # Neu co it nhat 1 khuon mat trong frame
@@ -100,6 +102,7 @@ def main():
                             # Lay ra ten va ty le % cua class co ty le cao nhat
                             best_name = class_names[best_class_indices[0]]
                             print("Name: {}, Probability: {}".format(best_name, best_class_probabilities))
+                            result.append(best_class_probabilities)
 
                             # Ve khung mau xanh quanh khuon mat
                             cv2.rectangle(frame, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)
@@ -127,7 +130,8 @@ def main():
                 cv2.imshow('Face Recognition', frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-
+            print("MEAN : {}".format(np.mean(result)))
+            
             cap.release()
             cv2.destroyAllWindows()
 
