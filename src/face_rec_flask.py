@@ -24,7 +24,7 @@ THRESHOLD = [0.6, 0.7, 0.7]
 FACTOR = 0.709
 IMAGE_SIZE = 182
 INPUT_IMAGE_SIZE = 160
-CLASSIFIER_PATH = './Models/facemodel.pkl'
+CLASSIFIER_PATH = './Models/raw_10_img_3_aug.pkl'
 FACENET_MODEL_PATH = './Models/20180402-114759.pb'
 
 # Load The Custom Classifier
@@ -77,9 +77,10 @@ def upload_img_file():
 
         decoded_string = base64.b64decode(f)
         frame = np.fromstring(decoded_string, dtype=np.uint8)
-        #frame = frame.reshape(w,h,3)
+        
         frame = cv2.imdecode(frame, cv2.IMREAD_ANYCOLOR)  # cv2.IMREAD_COLOR in OpenCV 3.1
-
+        
+        #frame = frame.reshape(w,h,3)
         bounding_boxes, _ = align.detect_face.detect_face(frame, MINSIZE, pnet, rnet, onet, THRESHOLD, FACTOR)
 
         faces_found = bounding_boxes.shape[0]
@@ -92,18 +93,27 @@ def upload_img_file():
                 bb[i][1] = det[i][1]
                 bb[i][2] = det[i][2]
                 bb[i][3] = det[i][3]
-                cropped = frame
+                
                 cropped = frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :]
+                cv2.imshow("Image", cropped)
+                cv2.waitKey(0)
+
+                # # Đóng cửa sổ hiển thị
+                cv2.destroyWindow("Image")
                 scaled = cv2.resize(cropped, (INPUT_IMAGE_SIZE, INPUT_IMAGE_SIZE),
                                     interpolation=cv2.INTER_CUBIC)
                 scaled = facenet.prewhiten(scaled)
                 scaled_reshape = scaled.reshape(-1, INPUT_IMAGE_SIZE, INPUT_IMAGE_SIZE, 3)
                 feed_dict = {images_placeholder: scaled_reshape, phase_train_placeholder: False}
                 emb_array = sess.run(embeddings, feed_dict=feed_dict)
+                
+                # Dua vao model de classifier
                 predictions = model.predict_proba(emb_array)
                 best_class_indices = np.argmax(predictions, axis=1)
                 best_class_probabilities = predictions[
                     np.arange(len(best_class_indices)), best_class_indices]
+                
+                # Lay ra ten va ty le % cua class co ty le cao nhat
                 best_name = class_names[best_class_indices[0]]
                 print("Name: {}, Probability: {}".format(best_name, best_class_probabilities))
 
@@ -113,7 +123,7 @@ def upload_img_file():
                     name = "Unknown"
 
 
-        return name;
+        return name
 
 
 if __name__ == '__main__':

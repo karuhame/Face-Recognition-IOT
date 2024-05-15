@@ -2,17 +2,23 @@
 
 # Cài đặt thư viện
 pip install -r requirements.txt
-
-# Cài pretrained model
-- Link: https://drive.usercontent.google.com/download?id=1R77HmFADxe87GmoLwzfgMu_HY0IhcyBz&export=download&authuser=0
-- Tạo folder Models rồi giải nén
-  ![image](https://github.com/karuhame/PBL5/assets/62510010/fc0b8c99-6fb1-4647-b8bf-998e86ce0bac)
+# Nếu có thiếu thì tiếp tục pip install tới khi chạy đc
 
 # Tiền xử lý dữ liệu
-python src/align_dataset_mtcnn.py  Dataset/FaceData/raw Dataset/FaceData/processed --image_size 160 --margin 32  --random_order --gpu_memory_fraction 0.25
+# Cú pháp: python src/align_dataset_mtcnn.py <raw data_dir> <aligned data_dir> <augmentation data_dir> --image_size 160 --margin 32  --random_order --gpu_memory_fraction 0.25
+
+python src/align_dataset_mtcnn.py  Dataset/FaceData/raw Dataset/FaceData/processed Dataset/FaceData/augment_data_10 --image_size 160 --margin 32  --random_order --gpu_memory_fraction 0.25
 
 # Train model
-python src/classifier.py TRAIN Dataset/FaceData/processed Models/20180408-102900.pb Models/facemodel.pkl --batch_size 1000
+python src/classifier.py TRAIN Dataset/FaceData/augment_data_10 Models/20180402-114759.pb Models/raw_10_img_3_aug.pkl --batch_size 1000
 
 # Test
-python src/face_rec_cam.py 
+python src/face_rec_cam.py --modelPath Models/raw_10_img_3_aug.pkl
+python src/face_rec.py --modelPath Models/raw_10_img_3_aug.pkl
+
+# Run Flask
+python src/face_rec_flask.py
+
+python requestFlask.py 
+
+
