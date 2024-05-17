@@ -24,9 +24,9 @@ def create_noisy_images(inp_folder, out_folder):
             image = cv2.imread(input_path, 1)
 
             # Tạo 10 ảnh với mức độ nhiễu khác nhau
-            for i in range(10):
+            for i in range(5):
                 # Tính mức độ nhiễu cho từng lần lặp
-                amount = 0.001 + i * 0.001
+                amount = 0.001 + i * 0.002
 
                 # Thêm nhiễu salt-and-pepper vào ảnh
                 noise = random_noise(image, mode='s&p', amount=amount)
@@ -60,9 +60,9 @@ def create_blur_image(inp_folder, out_folder):
             image = cv2.imread(input_path, 1)
 
             # Loop để tạo 10 ảnh mờ với các mức độ khác nhau
-            for i in range(1, 11):
+            for i in range(1, 6):
                 # Tạo kernel với numpy
-                kernel_size = i + 1
+                kernel_size = i + 2
                 kernel = np.ones((kernel_size, kernel_size), np.float32) / (kernel_size * kernel_size)
 
                 # Áp dụng bộ lọc
@@ -99,8 +99,8 @@ def create_ilumination_image(inp_folder, out_folder):
             # Load ảnh từ tệp tin đầu vào
             image = cv2.imread(input_path, 1)
         
-            for i in range(10):
-                gamma = 0.5 + i * 0.25  # Giá trị gamma thaiy đổi từ 0.5 đến 3
+            for i in range(5):
+                gamma = 0.5 + i * 0.5  # Giá trị gamma thaiy đổi từ 0.5 đến 3
                 adjusted = adjust_gamma(image, gamma=gamma)
                 output_filename = f"gamma_{filename}_{i}.jpg"  # Tên file đầu ra duy nhất
 

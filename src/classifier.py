@@ -40,6 +40,12 @@ from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, log_loss
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LogisticRegression
 
 def main(args):
   
@@ -90,8 +96,12 @@ def main(args):
                 end_index = min((i+1)*args.batch_size, nrof_images)
                 paths_batch = paths[start_index:end_index]
                 images = facenet.load_data(paths_batch, False, False, args.image_size)
+                print("Shape: ", images.shape)
                 feed_dict = { images_placeholder:images, phase_train_placeholder:False }
                 emb_array[start_index:end_index,:] = sess.run(embeddings, feed_dict=feed_dict)
+                print("Emb: ", emb_array.shape)
+
+                
             
             classifier_filename_exp = os.path.expanduser(args.classifier_filename)
 
@@ -99,8 +109,13 @@ def main(args):
                 # Train classifier
                 print('Training classifier')
                 
-                model = SVC(kernel='linear', probability=True)
+                # model = SVC(kernel='linear', probability=True)
                 # model = RandomForestClassifier()
+                # model = LogisticRegression()
+                # model = DecisionTreeClassifier()
+                # model = KNeighborsClassifier()
+                model = SGDClassifier(loss="modified_huber")
+                # model = GaussianNB()
                 model.fit(emb_array, labels)
 
                 # Create a list of class names
@@ -111,24 +126,24 @@ def main(args):
                     pickle.dump((model, class_names), outfile)
                 print('Saved classifier model to file "%s"' % classifier_filename_exp)
                 
-                y_pred_train = model.predict(emb_array)
+                # y_pred_train = model.predict(emb_array)
 
-                # Compute accuracy on the training data
-                accuracy_train = accuracy_score(labels, y_pred_train)
+                # # Compute accuracy on the training data
+                # accuracy_train = accuracy_score(labels, y_pred_train)
 
-                # Compute log loss on the training data
-                y_pred_proba_train = model.predict_proba(emb_array)
-                log_loss_train = log_loss(labels, y_pred_proba_train)
+                # # Compute log loss on the training data
+                # y_pred_proba_train = model.predict_proba(emb_array)
+                # log_loss_train = log_loss(labels, y_pred_proba_train)
 
-                # Create a list of metric values
-                metrics = ['Accuracy', 'Log Loss']
-                values = [accuracy_train, log_loss_train]
+                # # Create a list of metric values
+                # metrics = ['Accuracy', 'Log Loss']
+                # values = [accuracy_train, log_loss_train]
 
-                # Plot the metrics
-                plt.bar(metrics, values)
-                plt.ylabel('Value')
-                plt.title('Training Metrics')
-                plt.show()
+                # # Plot the metrics
+                # plt.bar(metrics, values)
+                # plt.ylabel('Value')
+                # plt.title('Training Metrics')
+                # plt.show()
                 
             elif (args.mode=='CLASSIFY'):
                 # Classify images
@@ -149,6 +164,10 @@ def main(args):
                     
                 accuracy = np.mean(np.equal(best_class_indices, labels))
                 print('Accuracy: %.3f' % accuracy)
+
+                # Show confusion matrix
+                show_confusion_matrix(class_names, labels, best_class_indices)
+                
                 
             
 def split_dataset(dataset, min_nrof_images_per_class, nrof_train_images_per_class):
@@ -163,7 +182,32 @@ def split_dataset(dataset, min_nrof_images_per_class, nrof_train_images_per_clas
             test_set.append(facenet.ImageClass(cls.name, paths[nrof_train_images_per_class:]))
     return train_set, test_set
 
-            
+def show_confusion_matrix(class_names, y_true, y_predict):
+    cm = confusion_matrix(y_true, y_predict)
+    # Calculate accuracy percentages
+    cm_percent = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100
+
+    
+    # Thiết lập kích thước của figure
+    plt.figure(figsize=(8, 8))  # Thay đổi kích thước tại đây
+    
+    # Plot confusion matrix
+    plt.imshow(cm_percent, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title('Confusion Matrix (Accuracy %)')
+    plt.colorbar()
+    tick_marks = np.arange(len(class_names))
+    plt.xticks(tick_marks, class_names, rotation=45)
+    plt.yticks(tick_marks, class_names)
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+
+    # Fill matrix with percentage values
+    for i, j in np.ndindex(cm.shape):
+        plt.text(j, i, format(cm_percent[i, j], '.2f') + '%', ha='center', va='center',
+                color='white' if cm_percent[i, j] > 50 else 'black')
+    
+    plt.show()
+    
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
