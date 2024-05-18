@@ -109,12 +109,12 @@ def main(args):
                 # Train classifier
                 print('Training classifier')
                 
-                # model = SVC(kernel='linear', probability=True)
+                model = SVC(kernel='linear', probability=True)
                 # model = RandomForestClassifier()
                 # model = LogisticRegression()
                 # model = DecisionTreeClassifier()
                 # model = KNeighborsClassifier()
-                model = SGDClassifier(loss="modified_huber")
+                # model = SGDClassifier(loss="modified_huber")
                 # model = GaussianNB()
                 model.fit(emb_array, labels)
 
@@ -125,25 +125,6 @@ def main(args):
                 with open(classifier_filename_exp, 'wb') as outfile:
                     pickle.dump((model, class_names), outfile)
                 print('Saved classifier model to file "%s"' % classifier_filename_exp)
-                
-                # y_pred_train = model.predict(emb_array)
-
-                # # Compute accuracy on the training data
-                # accuracy_train = accuracy_score(labels, y_pred_train)
-
-                # # Compute log loss on the training data
-                # y_pred_proba_train = model.predict_proba(emb_array)
-                # log_loss_train = log_loss(labels, y_pred_proba_train)
-
-                # # Create a list of metric values
-                # metrics = ['Accuracy', 'Log Loss']
-                # values = [accuracy_train, log_loss_train]
-
-                # # Plot the metrics
-                # plt.bar(metrics, values)
-                # plt.ylabel('Value')
-                # plt.title('Training Metrics')
-                # plt.show()
                 
             elif (args.mode=='CLASSIFY'):
                 # Classify images

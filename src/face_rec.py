@@ -68,11 +68,14 @@ def main():
             while (cap.isOpened()):
                 # Doc tung frame
                 ret, frame = cap.read()
+                print("frame1: ", frame.shape)                
                 try:
                     bounding_boxes, _ = align.detect_face.detect_face(frame, MINSIZE, pnet, rnet, onet, THRESHOLD, FACTOR)
                 except AttributeError as e:
                     break
                 faces_found = bounding_boxes.shape[0]
+                print("Bounding box: ", bounding_boxes.shape)                
+
                 try:
                     # Neu co it nhat 1 khuon mat trong frame
                     if faces_found > 0:

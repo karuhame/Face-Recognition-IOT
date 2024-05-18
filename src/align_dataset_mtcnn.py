@@ -98,7 +98,7 @@ def main(args):
                         if img.ndim == 2:
                             img = facenet.to_rgb(img)
                         img = img[:,:,0:3]
-    
+                            
                         bounding_boxes, _ = align.detect_face.detect_face(img, minsize, pnet, rnet, onet, threshold, factor)
                         nrof_faces = bounding_boxes.shape[0]
                         if nrof_faces>0:
@@ -128,6 +128,7 @@ def main(args):
                                 bb[3] = np.minimum(det[3]+args.margin/2, img_size[0])
                                 cropped = img[bb[1]:bb[3],bb[0]:bb[2],:]
                                 from PIL import Image
+
                                 cropped = Image.fromarray(cropped)
                                 scaled = cropped.resize((args.image_size, args.image_size), Image.BILINEAR)
                                 nrof_successfully_aligned += 1

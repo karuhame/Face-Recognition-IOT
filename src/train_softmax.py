@@ -466,7 +466,7 @@ def save_variables_and_metagraph(sess, saver, summary_writer, model_dir, model_n
     save_time_metagraph = 0  
     if not os.path.exists(metagraph_filename):
         print('Saving metagraph')
-        start_time = time.time()
+        start_time = time.time() 
         saver.export_meta_graph(metagraph_filename)
         save_time_metagraph = time.time() - start_time
         print('Metagraph saved in %.2f seconds' % save_time_metagraph)

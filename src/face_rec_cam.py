@@ -97,7 +97,7 @@ def main():
 
                             # Cat phan khuon mat tim duoc
                             cropped = frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :]
-                            # Hiển thị hình ảnh cropped
+                            # # Hiển thị hình ảnh cropped
                             # cv2.imshow("Cropped Image", cropped)
                             # cv2.waitKey(0)
 
@@ -109,6 +109,7 @@ def main():
                             scaled_reshape = scaled.reshape(-1, INPUT_IMAGE_SIZE, INPUT_IMAGE_SIZE, 3)
                             feed_dict = {images_placeholder: scaled_reshape, phase_train_placeholder: False}
                             emb_array = sess.run(embeddings, feed_dict=feed_dict)
+                            
                             
                             # Dua vao model de classifier
                             predictions = model.predict_proba(emb_array)
@@ -125,7 +126,7 @@ def main():
                             text_y = bb[i][3] + 20
 
                             # Neu ty le nhan dang > 0.6 thi hien thi ten
-                            if best_class_probabilities > 0.6:
+                            if best_class_probabilities > 0.7:
                                 name = class_names[best_class_indices[0]]
                                 print("Name: {}, Probability: {}".format(best_name, best_class_probabilities))
                                 result.append(best_class_probabilities)

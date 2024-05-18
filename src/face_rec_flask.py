@@ -19,6 +19,13 @@ import collections
 from sklearn.svm import SVC
 import base64
 
+from flask import Flask, render_template
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField, MultipleFileField
+from werkzeug.utils import secure_filename
+import os
+from wtforms.validators import InputRequired
+
 MINSIZE = 20
 THRESHOLD = [0.6, 0.7, 0.7]
 FACTOR = 0.709
@@ -50,19 +57,30 @@ phase_train_placeholder = tf.compat.v1.get_default_graph().get_tensor_by_name("p
 embedding_size = embeddings.get_shape()[1]
 pnet, rnet, onet = align.detect_face.create_mtcnn(sess, "src/align")
 
-
-
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'supersecretkey'
+app.config['UPLOAD_FOLDER'] = 'uploads'
 CORS(app)
 
+class UploadFileForm(FlaskForm):
+    files = MultipleFileField("Files", validators=[InputRequired()])
+    submit = SubmitField("Upload Files")
 
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    form = UploadFileForm()
+    if form.validate_on_submit():
+        print("Form: ", form.files.data)
+        for file in form.files.data:
+            filename = file.filename
+            print("name: ", filename)
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename)))
+            print("YES")
+        return "Files have been uploaded."
+    return render_template('index.html', form=form)
 
-@app.route('/')
-@cross_origin()
-def index():
-    return "OK!";
-
-@app.route('/recog', methods=['POST'])
+@app.route('/recog', methods=['POST']) 
 @cross_origin()
 def upload_img_file():
     if request.method == 'POST':
@@ -76,10 +94,22 @@ def upload_img_file():
         # print(h)
 
         decoded_string = base64.b64decode(f)
-        frame = np.fromstring(decoded_string, dtype=np.uint8)
+        frame = np.fromstring(decoded_string, dtype=np.uint8)      
+        # # Hiển thị hình ảnh cropped
+        # cv2.imshow("Frame", frame)
+        # cv2.waitKey(0)
+
+        # # Đóng cửa sổ hiển thị
+        # cv2.destroyWindow("Frame") 
         
         frame = cv2.imdecode(frame, cv2.IMREAD_ANYCOLOR)  # cv2.IMREAD_COLOR in OpenCV 3.1
+        cv2.imshow("Frame", frame)
+        cv2.waitKey(0)
+
+        # Đóng cửa sổ hiển thị
+        cv2.destroyWindow("Frame") 
         
+        print("frame shape: ", frame.shape)
         #frame = frame.reshape(w,h,3)
         bounding_boxes, _ = align.detect_face.detect_face(frame, MINSIZE, pnet, rnet, onet, THRESHOLD, FACTOR)
 
@@ -106,6 +136,8 @@ def upload_img_file():
                 scaled_reshape = scaled.reshape(-1, INPUT_IMAGE_SIZE, INPUT_IMAGE_SIZE, 3)
                 feed_dict = {images_placeholder: scaled_reshape, phase_train_placeholder: False}
                 emb_array = sess.run(embeddings, feed_dict=feed_dict)
+                
+                print("Emb_array: ", emb_array.shape)
                 
                 # Dua vao model de classifier
                 predictions = model.predict_proba(emb_array)

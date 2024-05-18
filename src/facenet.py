@@ -216,7 +216,7 @@ def prewhiten(x):
     std = np.std(x)
     std_adj = np.maximum(std, 1.0/np.sqrt(x.size))
     y = np.multiply(np.subtract(x, mean), 1/std_adj)
-    return y  
+    return y 
 
 def crop(image, random_crop, image_size):
     if image.shape[1]>image_size:
