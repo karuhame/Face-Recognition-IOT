@@ -28,7 +28,7 @@ def main():
     new_processed_dir = "Dataset/FaceData/new_test_processed"
     data_dir = "Dataset/FaceData/augment_data_10"
     pretrain_model = "Models/20180402-114759.pb"
-    classify_model = "Models/NB_10.pkl"
+    classify_model = "Models/20_SVC_5.pkl"
     # train(data_dir, pretrain_model, classify_model)
     classify(new_processed_dir, pretrain_model, classify_model)
 main()

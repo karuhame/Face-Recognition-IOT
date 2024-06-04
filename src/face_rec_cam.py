@@ -126,7 +126,7 @@ def main():
                             text_y = bb[i][3] + 20
 
                             # Neu ty le nhan dang > 0.6 thi hien thi ten
-                            if best_class_probabilities > 0.7:
+                            if best_class_probabilities > 0.5:
                                 name = class_names[best_class_indices[0]]
                                 print("Name: {}, Probability: {}".format(best_name, best_class_probabilities))
                                 result.append(best_class_probabilities)

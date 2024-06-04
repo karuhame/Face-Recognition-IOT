@@ -148,8 +148,8 @@ def main(args):
             
     # data augmentation
     if(args.augment == True):
-        # create_blur_image(args.output_dir, args.augment_dir)
-        create_ilumination_image(args.output_dir, args.augment_dir)
+        create_blur_image(args.output_dir, args.augment_dir)
+        # create_ilumination_image(args.output_dir, args.augment_dir)
         create_noisy_images(args.output_dir, args.augment_dir)
     
     
