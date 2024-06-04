@@ -2,7 +2,7 @@
 
 # Cài đặt thư viện
 pip install -r requirements.txt
-# Nếu có thiếu thì tiếp tục pip install tới khi chạy đc
+Nếu có thiếu thì tiếp tục pip install tới khi chạy đc
 
 # Tiền xử lý dữ liệu
 # Cú pháp: python src/align_dataset_mtcnn.py <raw data_dir> <aligned data_dir> <augmentation data_dir> --image_size 160 --margin 32  --random_order --gpu_memory_fraction 0.25
